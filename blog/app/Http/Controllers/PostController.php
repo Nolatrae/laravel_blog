@@ -25,18 +25,19 @@ class PostController extends Controller
         $request->validate([
             'title' => 'required',
             'content' => 'required',
-            'publish_at' => 'nullable|date',
+            'publish_at' => 'nullable|date_format:Y-m-d\TH:i',
         ]);
-    
-        $postData = $request->all();
-        $postData['published'] = $this->shouldPublishNow($request->publish_at);
-    
-        // Отладочная информация
-        info("Post data: " . json_encode($postData));
-    
-        $post = Post::create($postData);
-    
-        return redirect()->route('posts.show', $post)->with('success', 'Post created successfully!');
+
+        $post = new Post([
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+            'publish_at' => $request->input('publish_now') ? now() : $request->input('publish_at'),
+            'publish_now' => $request->input('publish_now'),
+        ]);
+
+        $post->save();
+
+        return redirect()->route('posts.index')->with('success', 'Post created successfully!');
     }
 
     public function show(Post $post)

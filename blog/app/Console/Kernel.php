@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('publish:posts')->daily();
+        $schedule->command(PublishPosts::class)->everyMinute();
     }
 
     protected function commands()
