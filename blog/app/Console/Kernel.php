@@ -4,16 +4,17 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Console\Commands\PublishPosts;
 
 class Kernel extends ConsoleKernel
 {
     protected $commands = [
-        Commands\PublishPosts::class,
+        PublishPosts::class,
     ];
 
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command(PublishPosts::class)->everyMinute();
+        $schedule->command('publish:posts')->everyMinute();
     }
 
     protected function commands()
