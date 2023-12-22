@@ -37,6 +37,8 @@ class PostController extends Controller
 
         $post->save();
 
+        event(new PostPublished($post));
+
         return redirect()->route('posts.index')->with('success', 'Post created successfully!');
     }
 
@@ -57,15 +59,18 @@ class PostController extends Controller
             'content' => 'required',
             'publish_at' => 'nullable|date',
         ]);
-    
+
         $postData = $request->all();
         $postData['published'] = $this->shouldPublishNow($request->publish_at);
-    
-        // Отладочная информация
+
         info("Updated post data: " . json_encode($postData));
-    
+
         $post->update($postData);
-    
+
+        if ($post->published && $post->wasChanged('published')) {
+            event(new PostPublished($post));
+        }
+
         return redirect()->route('posts.show', $post)->with('success', 'Post updated successfully!');
     }
     
