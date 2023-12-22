@@ -1,5 +1,3 @@
-<!-- resources/views/posts/show.blade.php -->
-
 @extends('layouts.app')
 
 @section('content')
@@ -19,7 +17,14 @@
     <h2 class="mt-4">Comments</h2>
     <ul class="list-group">
         @forelse ($post->comments as $comment)
-            <li class="list-group-item">{{ $comment->user_name }}: {{ $comment->comment }}</li>
+            <li class="list-group-item">
+                {{ $comment->user_name }}: {{ $comment->comment }}
+                    <form method="POST" action="{{ route('comments.destroy', $comment) }}" class="d-inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this comment?')">Delete Comment</button>
+                    </form>
+            </li>
         @empty
             <li class="list-group-item">No comments yet.</li>
         @endforelse
